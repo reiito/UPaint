@@ -236,7 +236,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\ColorButton.cs" />
+    <Compile Include="Assets\Scripts\Eraser.cs" />
     <Compile Include="Assets\Scripts\GameController.cs" />
+    <Compile Include="Assets\Scripts\PaintBrush.cs" />
     <Compile Include="Assets\Scripts\PaintManager.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
   </ItemGroup>
