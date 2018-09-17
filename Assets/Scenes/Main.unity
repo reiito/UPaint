@@ -459,7 +459,6 @@ GameObject:
   m_Component:
   - component: {fileID: 136400867}
   - component: {fileID: 136400868}
-  - component: {fileID: 136400869}
   m_Layer: 0
   m_Name: PaintMananger
   m_TagString: Untagged
@@ -492,20 +491,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   defaultColor: {fileID: 1121446442}
+  paintBrush: {fileID: 1897749085121756, guid: a7436891e718150408c57392a93ee33a, type: 2}
   circleBrush: {fileID: 1061388143493140, guid: 35fb45850d6b52547badfa1d802e3c6a,
-    type: 2}
---- !u!114 &136400869
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 136400866}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ab27126b8d920944bbcd7c7a8c46b53, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  paintBrushPrefab: {fileID: 1897749085121756, guid: a7436891e718150408c57392a93ee33a,
     type: 2}
 --- !u!1 &173769574
 GameObject:
