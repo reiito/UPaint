@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+[System.Serializable]
 public enum Tools
 {
     BRUSH, ERASER, CIRCLE, SQUARE
@@ -8,16 +9,22 @@ public enum Tools
 
 public class PaintManager : MonoBehaviour
 {
+    public GameController gameController;
+
     public Transform defaultColor;
+    public Transform defaultTool;
 
     public GameObject paintBrush;
     public GameObject circleBrush;
+
+    public Material[] buttonMaterials;
 
     PaintBrush activeLine;
 
     Transform activeColorButton;
     Material brushMat;
 
+    Transform activeToolButton;
     Tools selectedTool;
 
     int layerCount = 0;
@@ -26,24 +33,62 @@ public class PaintManager : MonoBehaviour
     {
         activeColorButton = defaultColor;
         SetCurrentColor(defaultColor);
-        selectedTool = Tools.BRUSH;
+        SetCurrentTool(defaultTool);
     }
 
     private void Update()
     {
-        switch (selectedTool)
+        if (!gameController.platformerMode)
         {
-            case Tools.BRUSH:
-                PaintBrush();
+            switch (selectedTool)
+            {
+                case Tools.BRUSH:
+                    PaintBrush();
+                    break;
+                case Tools.ERASER:
+                    break;
+                case Tools.CIRCLE:
+                    PaintCircle();
+                    break;
+                case Tools.SQUARE:
+                    break;
+            }
+        }
+    }
+
+    public void SetCurrentTool(Transform toolButton)
+    {
+        if (activeToolButton)
+        {
+            activeToolButton.GetComponent<Image>().material = buttonMaterials[0];
+        }
+        activeToolButton = toolButton;
+        activeToolButton.GetComponent<Image>().material = buttonMaterials[1];
+
+        switch (activeToolButton.name)
+        {
+            case "Brush":
+                selectedTool = Tools.BRUSH;
                 break;
-            case Tools.ERASER:
+            case "Eraser":
+                selectedTool = Tools.ERASER;
                 break;
-            case Tools.CIRCLE:
-                PaintCircle();
+            case "Circle":
+                selectedTool = Tools.CIRCLE;
                 break;
-            case Tools.SQUARE:
+            case "Square":
+                selectedTool = Tools.SQUARE;
+                break;
+
+            default:
+                Debug.Log(activeToolButton.name + " not implemented yet");
                 break;
         }
+    }
+
+    public void SetCurrentTool(Tools newTool)
+    {
+        selectedTool = newTool;
     }
 
     public void SetCurrentColor(Transform colorButton)

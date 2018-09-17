@@ -4,20 +4,20 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
-  float switchTime = 180f;
+    public bool platformerMode;
 
-  bool platformerMode;
+    float switchTime = 180f;
 
-  private void Start()
-  {
-    StartCoroutine(BaitAndSwitch());
-  }
+    private void Start()
+    {
+        StartCoroutine(BaitAndSwitch());
+    }
 
-  IEnumerator BaitAndSwitch()
-  {
-    yield return new WaitForSeconds(switchTime);
+    IEnumerator BaitAndSwitch()
+    {
+        yield return new WaitForSeconds(switchTime);
 
-    Debug.Log("2d mode");
-    platformerMode = true;
-  }
+        Debug.Log("2d mode");
+        platformerMode = true;
+    }
 }
