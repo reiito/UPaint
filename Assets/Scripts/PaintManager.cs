@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 [System.Serializable]
-public enum Tools
+public enum PaintTools
 {
     BRUSH, ERASER, CIRCLE, SQUARE
 }
@@ -28,7 +28,7 @@ public class PaintManager : MonoBehaviour
     Material brushMat;
 
     Transform activeToolButton;
-    Tools selectedTool;
+  PaintTools selectedTool;
 
     int layerCount = 0;
 
@@ -55,16 +55,16 @@ public class PaintManager : MonoBehaviour
         {
             switch (selectedTool)
             {
-                case Tools.BRUSH:
+                case PaintTools.BRUSH:
                     PaintBrush();
                     break;
-                case Tools.ERASER:
+                case PaintTools.ERASER:
                     Erase();
                     break;
-                case Tools.CIRCLE:
+                case PaintTools.CIRCLE:
                     PaintCircle();
                     break;
-                case Tools.SQUARE:
+                case PaintTools.SQUARE:
                     break;
             }
         }
@@ -82,16 +82,16 @@ public class PaintManager : MonoBehaviour
         switch (activeToolButton.name)
         {
             case "Brush":
-                selectedTool = Tools.BRUSH;
+                selectedTool = PaintTools.BRUSH;
                 break;
             case "Eraser":
-                selectedTool = Tools.ERASER;
+                selectedTool = PaintTools.ERASER;
                 break;
             case "Circle":
-                selectedTool = Tools.CIRCLE;
+                selectedTool = PaintTools.CIRCLE;
                 break;
             case "Square":
-                selectedTool = Tools.SQUARE;
+                selectedTool = PaintTools.SQUARE;
                 break;
 
             default:
