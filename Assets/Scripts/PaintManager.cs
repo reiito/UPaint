@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 [System.Serializable]
@@ -17,6 +18,8 @@ public class PaintManager : MonoBehaviour
     public GameObject paintBrush;
     public GameObject circleBrush;
 
+    public GameObject sizeDropDown;
+
     public Material[] buttonMaterials;
 
     PaintBrush activeLine;
@@ -29,6 +32,8 @@ public class PaintManager : MonoBehaviour
 
     int layerCount = 0;
 
+    float brushSize = 0.05f;
+
     private void Start()
     {
         activeColorButton = defaultColor;
@@ -38,6 +43,14 @@ public class PaintManager : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
+        }
+
         if (!gameController.platformerMode)
         {
             switch (selectedTool)
@@ -46,6 +59,7 @@ public class PaintManager : MonoBehaviour
                     PaintBrush();
                     break;
                 case Tools.ERASER:
+                    Erase();
                     break;
                 case Tools.CIRCLE:
                     PaintCircle();
@@ -86,9 +100,20 @@ public class PaintManager : MonoBehaviour
         }
     }
 
-    public void SetCurrentTool(Tools newTool)
+    public void SetBrushSize(Dropdown menu)
     {
-        selectedTool = newTool;
+        switch (menu.value)
+        {
+            case 0:
+                brushSize = 0.05f;
+                break;
+            case 1:
+                brushSize = 0.1f;
+                break;
+            case 2:
+                brushSize = 0.2f;
+                break;
+        }
     }
 
     public void SetCurrentColor(Transform colorButton)
@@ -105,6 +130,8 @@ public class PaintManager : MonoBehaviour
         {
             layerCount++;
             activeLine = Instantiate(paintBrush, transform).GetComponent<PaintBrush>();
+            activeLine.GetComponent<LineRenderer>().widthMultiplier = brushSize;
+            activeLine.GetComponent<EdgeCollider2D>().edgeRadius = brushSize / 2;
             activeLine.GetComponent<LineRenderer>().material = brushMat;
             activeLine.GetComponent<LineRenderer>().material.renderQueue += layerCount;
         }
@@ -117,8 +144,26 @@ public class PaintManager : MonoBehaviour
         if (activeLine != null)
         {
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
             activeLine.UpdateLine(mousePos);
+        }
+    }
+
+    void Erase()
+    {
+        if (Input.GetMouseButton(0))
+        {
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 mousePos2D = new Vector2(mousePos.x, mousePos.y);
+
+            RaycastHit2D hit = Physics2D.Raycast(mousePos2D, Vector2.zero);
+
+            if (hit.collider != null)
+            {
+                if (hit.transform.tag == "Paint")
+                {
+                    Destroy(hit.transform.gameObject);
+                }
+            }
         }
     }
 
@@ -127,7 +172,9 @@ public class PaintManager : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             layerCount++;
-            SpriteRenderer sprite = Instantiate(circleBrush, Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f)), Quaternion.identity, transform).GetComponent<SpriteRenderer>();
+            GameObject circle = Instantiate(circleBrush, Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f)), Quaternion.identity, transform);
+            circle.transform.localScale = new Vector3(brushSize, brushSize, brushSize);
+            SpriteRenderer sprite = circle.GetComponent<SpriteRenderer>();
             sprite.material = brushMat;
             sprite.material.renderQueue += layerCount;
         }
