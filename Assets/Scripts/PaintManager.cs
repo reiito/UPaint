@@ -134,6 +134,7 @@ public class PaintManager : MonoBehaviour
             activeLine.GetComponent<EdgeCollider2D>().edgeRadius = brushSize / 2;
             activeLine.GetComponent<LineRenderer>().material = brushMat;
             activeLine.GetComponent<LineRenderer>().material.renderQueue += layerCount;
+            activeLine.gameObject.layer = LayerMask.NameToLayer("Ground");
         }
 
         if (Input.GetMouseButtonUp(0))
@@ -174,6 +175,7 @@ public class PaintManager : MonoBehaviour
             layerCount++;
             GameObject circle = Instantiate(circleBrush, Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f)), Quaternion.identity, transform);
             circle.transform.localScale = new Vector3(brushSize, brushSize, brushSize);
+            circle.layer = LayerMask.NameToLayer("Ground");
             SpriteRenderer sprite = circle.GetComponent<SpriteRenderer>();
             sprite.material = brushMat;
             sprite.material.renderQueue += layerCount;
