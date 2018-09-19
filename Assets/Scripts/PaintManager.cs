@@ -8,17 +8,25 @@ public enum PaintTools
     BRUSH, ERASER, CIRCLE, SQUARE
 }
 
+[System.Serializable]
+public struct LockedTool
+{
+    public Button button;
+    public GameObject lockObj;
+}
+
 public class PaintManager : MonoBehaviour
 {
-    public GameController gameController;
+    public static PaintManager paintManagerInstance;
+    const float DEFAULT_BRUSH_SIZE = 0.075f;
 
     public Transform defaultColor;
     public Transform defaultTool;
 
-    public GameObject paintBrush;
-    public GameObject circleBrush;
+    public GameObject[] brushPrefabs;
 
     public GameObject sizeDropDown;
+    public LockedTool[] lockedTools;
 
     public Material[] buttonMaterials;
 
@@ -28,17 +36,30 @@ public class PaintManager : MonoBehaviour
     Material brushMat;
 
     Transform activeToolButton;
-  PaintTools selectedTool;
+    PaintTools selectedTool;
 
     int layerCount = 0;
 
-    float brushSize = 0.05f;
+    float brushSize = DEFAULT_BRUSH_SIZE;
+
+    GameController gameController;
+
+    private void Awake()
+    {
+        paintManagerInstance = this;
+    }
 
     private void Start()
     {
+        gameController = GameController.gameInstance;
         activeColorButton = defaultColor;
         SetCurrentColor(defaultColor);
         SetCurrentTool(defaultTool);
+
+        foreach (LockedTool t in lockedTools)
+        {
+            t.button.enabled = false;
+        }
     }
 
     private void Update()
@@ -51,7 +72,7 @@ public class PaintManager : MonoBehaviour
             }
         }
 
-        if (!gameController.platformerMode)
+        if (!gameController.PlatformerMode)
         {
             switch (selectedTool)
             {
@@ -65,6 +86,7 @@ public class PaintManager : MonoBehaviour
                     PaintCircle();
                     break;
                 case PaintTools.SQUARE:
+                    PaintSquare();
                     break;
             }
         }
@@ -105,13 +127,13 @@ public class PaintManager : MonoBehaviour
         switch (menu.value)
         {
             case 0:
-                brushSize = 0.05f;
+                brushSize = DEFAULT_BRUSH_SIZE;
                 break;
             case 1:
-                brushSize = 0.1f;
+                brushSize = DEFAULT_BRUSH_SIZE * 2;
                 break;
             case 2:
-                brushSize = 0.2f;
+                brushSize = DEFAULT_BRUSH_SIZE * 4;
                 break;
         }
     }
@@ -129,7 +151,7 @@ public class PaintManager : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             layerCount++;
-            activeLine = Instantiate(paintBrush, transform).GetComponent<PaintBrush>();
+            activeLine = Instantiate(brushPrefabs[0], transform).GetComponent<PaintBrush>();
             activeLine.GetComponent<LineRenderer>().widthMultiplier = brushSize;
             activeLine.GetComponent<EdgeCollider2D>().edgeRadius = brushSize / 2;
             activeLine.GetComponent<LineRenderer>().material = brushMat;
@@ -173,12 +195,38 @@ public class PaintManager : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             layerCount++;
-            GameObject circle = Instantiate(circleBrush, Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f)), Quaternion.identity, transform);
-            circle.transform.localScale = new Vector3(brushSize, brushSize, brushSize);
+            GameObject circle = Instantiate(brushPrefabs[1], Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f)), Quaternion.identity, transform);
+            circle.transform.localScale = new Vector3(brushSize, brushSize, brushSize) * 2;
             circle.layer = LayerMask.NameToLayer("Ground");
             SpriteRenderer sprite = circle.GetComponent<SpriteRenderer>();
             sprite.material = brushMat;
             sprite.material.renderQueue += layerCount;
+        }
+    }
+
+    void PaintSquare()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            layerCount++;
+            GameObject square = Instantiate(brushPrefabs[2], Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f)), Quaternion.identity, transform);
+            square.transform.localScale = new Vector3(brushSize, brushSize, brushSize) * 2;
+            square.layer = LayerMask.NameToLayer("Ground");
+            SpriteRenderer sprite = square.GetComponent<SpriteRenderer>();
+            sprite.material = brushMat;
+            sprite.material.renderQueue += layerCount;
+        }
+    }
+
+    public void UnlockTool(PaintTools tool)
+    {
+        switch (tool)
+        {
+            case PaintTools.SQUARE:
+                lockedTools[0].button.enabled = true;
+                lockedTools[0].lockObj.SetActive(false);
+                break;
+
         }
     }
 }

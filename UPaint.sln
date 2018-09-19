@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
+# Visual Studio 2017
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UPaint", "UPaint.csproj", "{236591DA-7868-2F3E-C291-92F7D9411CE6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UPaint.Editor", "UPaint.Editor.csproj", "{21663B8A-7BA9-3AA1-A69A-F1DEB96BE524}"
