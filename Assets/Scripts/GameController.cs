@@ -64,11 +64,7 @@ public class GameController : MonoBehaviour
             {
                 if (Input.GetKeyDown("p"))
                 {
-                    if (!platformerMode)
-                    {
-                        player.transform.position = platformerManager.RandomSpawnPosition();
-                    }
-                    else
+                    if (platformerMode)
                     {
                         player.gameObject.SetActive(false);
                     }
